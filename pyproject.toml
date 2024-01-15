@@ -8,8 +8,19 @@ readme = "README.md"
 
 [tool.poetry.dependencies]
 python = "^3.10"
+pandera = "^0.18.0"
+pandas = "^2.1.4"
+folium = "^0.15.1"
+openmeteo-requests = "^1.1.0"
+geopy = "^2.4.1"
+seaborn = "^0.13.1"
+python-dotenv = "^1.0.0"
+ipykernel = "^6.28.0"
 
 
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
+
+[tool.black]
+line-length = 79
