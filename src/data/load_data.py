@@ -5,7 +5,7 @@ PathLike = os.PathLike | str | bytes
 
 
 def load_json_files(
-    directory: str, json_files: list[str], encoding="cp1252"
+    directory: str, json_files: list[str], encoding="utf-8"
 ) -> list[dict]:
     json_objects = []
     for file in json_files:
@@ -14,7 +14,7 @@ def load_json_files(
     return json_objects
 
 
-def load_json_objects(file_path, encoding="cp1252") -> dict:
+def load_json_objects(file_path, encoding="utf-8") -> list[dict]:
     with open(file_path, "r", encoding=encoding) as file:
         for line in file:
             yield json.loads(line)
