@@ -4,6 +4,13 @@ import json
 PathLike = os.PathLike | str | bytes
 
 
+def get_raw_data(data_path: PathLike) -> list[dict]:
+    data_files = find_json_files_in_directory(data_path)
+    data_files = sorted(data_files, key=lambda x: int(remove_extension(x)))
+    raw_data = load_json_files(data_path, data_files)
+    return raw_data
+
+
 def load_json_files(
     directory: str, json_files: list[str], encoding="utf-8"
 ) -> list[dict]:
@@ -26,3 +33,7 @@ def find_json_files_in_directory(directory: PathLike) -> list[str]:
         if file.endswith(".json"):
             files.append(file)
     return files
+
+
+def remove_extension(filename: str) -> str:
+    return filename.split(".")[0]
