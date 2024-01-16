@@ -21,9 +21,9 @@ NUM_NEIGHBOR_STATIONS = int(os.getenv("NUM_NEIGHBOR_STATIONS"))
 def main():
     raw_data = get_raw_data()
     stations = build_stations_dataframe()
-    stations = get_k_closest_stations(stations, k=5)
+    stations = get_k_closest_stations(stations, k=NUM_NEIGHBOR_STATIONS)
 
-    stations.to_csv("data/processed/stations.csv", index=False)
+    stations.to_csv(DATA_PROCESSED_PATH / "stations.csv")
 
 
 if __name__ == "__main__":
