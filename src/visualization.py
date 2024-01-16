@@ -11,24 +11,24 @@ def plot_stations_in_map(
     target_station_id: str,
     other_stations_ids: list[str],
 ) -> folium.Map:
-    m = folium.Map(location=_get_coordinates(stations, target_station_id))
+    map_ = folium.Map(location=_get_coordinates(stations, target_station_id))
 
     folium.Marker(
         location=_get_coordinates(stations, target_station_id),
         popup=stations.loc[target_station_id, "name"],
         icon=folium.Icon(**BLUE_ICON),
-    ).add_to(m)
+    ).add_to(map_)
 
     for other_station_id in other_stations_ids:
         folium.Marker(
             location=_get_coordinates(stations, other_station_id),
             popup=stations.loc[other_station_id, "name"],
             icon=folium.Icon(**RED_ICON),
-        ).add_to(m)
+        ).add_to(map_)
 
-    m.fit_bounds(m.get_bounds())
+    map_.fit_bounds(map_.get_bounds())
 
-    return m
+    return map_
 
 
 def _get_coordinates(
