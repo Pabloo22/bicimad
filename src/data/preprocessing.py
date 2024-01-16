@@ -17,15 +17,16 @@ def build_stations_dataframe(raw_data: list[dict]) -> pd.DataFrame:
     stations = pd.DataFrame()
     for data in raw_data:
         for station in data["stations"]:
-            if station["id"] not in already_in:
-                stations = pd.concat(
-                    [
-                        stations,
-                        pd.DataFrame(station, index=[0], columns=KEEP_COLS),
-                    ],
-                    ignore_index=True,
-                )
-                already_in.append(station["id"])
+            if station["id"] in already_in:
+                continue
+            stations = pd.concat(
+                [
+                    stations,
+                    pd.DataFrame(station, index=[0], columns=KEEP_COLS),
+                ],
+                ignore_index=True,
+            )
+            already_in.append(station["id"])
 
     stations.set_index("id", inplace=True)
     return stations
