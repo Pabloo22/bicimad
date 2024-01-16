@@ -8,6 +8,7 @@ from src.data import (
     get_k_closest_stations,
     load_json_files,
     find_json_files_in_directory,
+    get_raw_data,
 )
 
 dotenv.load_dotenv()
@@ -23,17 +24,6 @@ def main():
     stations = get_k_closest_stations(stations, k=5)
 
     stations.to_csv("data/processed/stations.csv", index=False)
-
-
-def get_raw_data() -> list[dict]:
-    data_files = find_json_files_in_directory(DATA_RAW_PATH)
-    data_files = sorted(data_files, key=lambda x: int(remove_extension(x)))
-    raw_data = load_json_files(DATA_RAW_PATH, data_files)
-    return raw_data
-
-
-def remove_extension(filename: str) -> str:
-    return filename.split(".")[0]
 
 
 if __name__ == "__main__":

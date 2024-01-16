@@ -1,4 +1,5 @@
 from .load_data import (
+    get_raw_data,
     find_json_files_in_directory,
     load_json_files,
     load_json_objects,
