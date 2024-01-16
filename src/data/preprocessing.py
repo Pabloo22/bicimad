@@ -1,7 +1,7 @@
 import pandas as pd
 
 
-def build_stations_dataframe(raw_data: pd.DataFrame):
+def build_stations_dataframe(raw_data: list[dict]) -> pd.DataFrame:
     raise NotImplementedError
 
 
