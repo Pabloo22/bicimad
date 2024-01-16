@@ -2,13 +2,15 @@
 import pandas as pd
 import folium
 
-RED_ICON = {'color': 'red', 'icon': 'fa-bicycle', 'prefix': 'fa'}
-BLUE_ICON = {'color': 'blue', 'icon': 'fa-bicycle', 'prefix': 'fa'}
+RED_ICON = {"color": "red", "icon": "fa-bicycle", "prefix": "fa"}
+BLUE_ICON = {"color": "blue", "icon": "fa-bicycle", "prefix": "fa"}
+
 
 def plot_stations_in_map(
-    stations: pd.DataFrame, 
-    target_station_id: str, 
-    other_stations_ids: list[str]) -> folium.Map:
+    stations: pd.DataFrame,
+    target_station_id: str,
+    other_stations_ids: list[str],
+) -> folium.Map:
     m = folium.Map(location=_get_coordinates(stations, target_station_id))
 
     folium.Marker(
@@ -28,5 +30,11 @@ def plot_stations_in_map(
 
     return m
 
-def _get_coordinates(stations: pd.DataFrame, station_id: int) -> tuple[float, float]:
-    return (stations.loc[station_id, "latitude"], stations.loc[station_id, "longitude"])
+
+def _get_coordinates(
+    stations: pd.DataFrame, station_id: int
+) -> tuple[float, float]:
+    return (
+        stations.loc[station_id, "latitude"],
+        stations.loc[station_id, "longitude"],
+    )
