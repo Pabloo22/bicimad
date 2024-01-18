@@ -55,18 +55,16 @@ def _calculate_distance(row, target_station):
 def build_dock_bikes_timeseries_dataframe(
     data: list[dict], station_ids: list[int]
 ) -> pd.DataFrame:
-    stations_time_series = pd.DataFrame(index=station_ids)
-    data_list = []
+    data_list = {id_: [] for id_ in station_ids}
+    data_list["timestamps"] = []
 
     for d in data:
         date = pd.to_datetime(d["_id"])
-        dock_bikes_dict = {}
+        data_list["timestamps"].append(date)
         for station in d["stations"]:
             if station["id"] in station_ids:
-                dock_bikes_dict[station["id"]] = station["dock_bikes"]
-
-        data_list.append(pd.Series(dock_bikes_dict, name=date))
-
-    stations_time_series = pd.concat(data_list, axis=1).T
-
-    return stations_time_series
+                data_list[station["id"]].append(station["dock_bikes"])
+    
+    stations_timeseries = pd.DataFrame(data_list)
+    stations_timeseries.set_index("timestamps", inplace=True)
+    return stations_timeseries
