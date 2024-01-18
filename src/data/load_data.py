@@ -12,11 +12,11 @@ def get_raw_data(data_path: PathLike) -> list[dict]:
 
 
 def load_json_files(
-    directory: str, json_files: list[str], encoding="utf-8"
+    directory: PathLike, json_files: list[str], encoding="utf-8"
 ) -> list[dict]:
     json_objects = []
     for file in json_files:
-        file_path = directory + file
+        file_path = os.path.join(directory, file)
         json_objects.extend(load_json_objects(file_path, encoding))
     return json_objects
 
