@@ -64,7 +64,32 @@ def build_dock_bikes_timeseries_dataframe(
         for station in d["stations"]:
             if station["id"] in station_ids:
                 data_list[station["id"]].append(station["dock_bikes"])
-    
+
     stations_timeseries = pd.DataFrame(data_list)
     stations_timeseries.set_index("timestamps", inplace=True)
     return stations_timeseries
+
+
+def get_holidays(
+    start_date: str,
+    end_date: str,
+    holidays: pd.DataFrame,
+    include_weekends: bool = False,
+) -> pd.DataFrame:
+    # Set end date + 1 day to include the end date in the range
+    end_date = pd.to_datetime(end_date) + pd.Timedelta(days=1)
+    # Filter by date index (start_date <= date <= end_date)
+    holidays = holidays.loc[start_date:end_date]
+    # For each date, if there is a holiday, set the value to 1, otherwise 0
+    holiday_column = holidays.columns[1]
+    festivos = holidays[holiday_column].map(
+        lambda x: 1 if str(x).lower() == "festivo" else 0
+    )
+    # Add weekends as holidays
+    if include_weekends:
+        festivos[holidays.index.dayofweek.isin([5, 6])] = 1
+
+    # Now, expand the series in hourly intervals
+    festivos = festivos.resample("H").ffill()
+
+    return pd.Series(festivos, name="festivos")[start_date:end_date][:-1]
