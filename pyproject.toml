@@ -15,6 +15,7 @@ geopy = "^2.4.1"
 seaborn = "^0.13.1"
 python-dotenv = "^1.0.0"
 ipykernel = "^6.28.0"
+statsmodels = "^0.14.1"
 
 
 [build-system]
