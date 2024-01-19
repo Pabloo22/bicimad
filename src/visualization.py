@@ -7,30 +7,86 @@ from statsmodels.graphics.tsaplots import plot_acf, plot_pacf
 
 RED_ICON = {"color": "red", "icon": "fa-bicycle", "prefix": "fa"}
 BLUE_ICON = {"color": "blue", "icon": "fa-bicycle", "prefix": "fa"}
+MONTH_NAMES = [
+    "Enero",
+    "Febrero",
+    "Marzo",
+    "Abril",
+    "Mayo",
+    "Junio",
+    "Julio",
+    "Agosto",
+    "Septiembre",
+    "Octubre",
+    "Noviembre",
+    "Diciembre",
+]
+SEASONAL_COLORS = {
+    1: "lightblue",  # January (Winter)
+    2: "deepskyblue",  # February (Winter)
+    3: "lightgreen",  # March (Spring)
+    4: "mediumseagreen",  # April (Spring)
+    5: "greenyellow",  # May (Spring)
+    6: "gold",  # June (Summer)
+    7: "darkorange",  # July (Summer)
+    8: "orangered",  # August (Summer)
+    9: "sienna",  # September (Autumn)
+    10: "peru",  # October (Autumn)
+    11: "goldenrod",  # November (Autumn)
+    12: "royalblue",  # December (Winter)
+}
 
 
-import pandas as pd
+def plot_mean_values_by_hour_for_each_month(
+    series: pd.Series | pd.DataFrame,
+    figsize=(12, 6),
+    title="Valores promedio por hora para cada mes",
+    xlabel="Hora",
+    ylabel="Bicicletas ancladas",
+):
+    series = _extract_series(series)
+
+    monthly_hourly_means = series.groupby(
+        [series.index.month, series.index.hour]
+    ).mean()
+
+    plt.figure(figsize=figsize)
+
+    months = monthly_hourly_means.index.get_level_values(0).unique()
+
+    for month in months:
+        monthly_data = monthly_hourly_means.xs(month, level=0)
+        plt.plot(
+            monthly_data.index,
+            monthly_data.values,
+            label=MONTH_NAMES[month - 1],
+            color=SEASONAL_COLORS[month],
+        )
+    plt.xlabel(xlabel)
+    plt.ylabel(ylabel)
+    plt.title(title)
+    hours = monthly_hourly_means.index.get_level_values(1).unique()
+    plt.xticks(hours, hours)
+    plt.legend()
+    plt.grid(True)
+    plt.show()
 
 
 def plot_autocorrelation(
     data: pd.DataFrame | pd.Series, figsize=(12, 6), title_prefix=""
 ):
     series = _extract_series(data)
-
     plt.figure(figsize=figsize)
-
     plt.subplot(211)
     plot_acf(
-        series, ax=plt.gca(), title=f"{title_prefix}Autocorrelation Function"
+        series, ax=plt.gca(), title=f"{title_prefix}Función de Autocorrelación"
     )
-
     plt.subplot(212)
     plot_pacf(
         series,
         ax=plt.gca(),
-        title=f"{title_prefix}Partial Autocorrelation Function",
+        title=f"{title_prefix}Función de Autocorrelación Parcial",
     )
-
     plt.tight_layout()
     plt.show()
 
