@@ -6,10 +6,10 @@ import dotenv
 
 
 class Config(NamedTuple):
-    RAW_DATA_PATH: pathlib.Path
-    PROCESSED_DATA_PATH: pathlib.Path
-    NUM_NEIGHBOR_STATIONS: int
-    TARGET_STATION_ID: int
+    raw_data_path: pathlib.Path
+    processed_data_path: pathlib.Path
+    num_neighbor_stations: int
+    target_station_id: int
 
 
 def get_config() -> Config:
