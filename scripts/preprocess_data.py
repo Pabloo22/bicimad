@@ -6,7 +6,7 @@ import pathlib
 from src.data import (
     build_stations_dataframe,
     get_k_closest_stations,
-    get_raw_data,
+    load_json_data_in_date_range,
     build_dock_bikes_timeseries_dataframe,
 )
 
@@ -19,7 +19,7 @@ TARGET_STATION_ID = int(os.getenv("TARGET_STATION_ID"))
 
 
 def main():
-    raw_data = get_raw_data(DATA_RAW_PATH)
+    raw_data = load_json_data_in_date_range(DATA_RAW_PATH)
     stations = build_stations_dataframe(raw_data)
     neighbor_selected_stations = get_k_closest_stations(
         target_station_id=TARGET_STATION_ID,

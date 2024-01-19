@@ -1,9 +1,9 @@
 from .load_data import (
-    get_raw_data,
+    load_json_data_in_date_range,
     find_json_files_in_directory,
     load_json_files,
     load_json_objects,
-    load_holidays,
+    load_holidays_calendar,
     load_json_files_per_month,
 )
 from .preprocessing import (
