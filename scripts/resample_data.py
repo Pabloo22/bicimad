@@ -8,9 +8,8 @@ def main():
         config.processed_data_path / "stations_timeseries.csv"
     )
 
-
     dock_bikes_timeseries = dock_bikes_timeseries.resample("H").mean()
-    
+
     dock_bikes_timeseries["missing"] = (
         dock_bikes_timeseries[str(config.target_station_id)]
         .isnull()
