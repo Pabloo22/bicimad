@@ -1,25 +1,25 @@
-import os
-
-import dotenv
-import pathlib
-import pandas as pd
-
-dotenv.load_dotenv()
-
-DATA_PROCESSED_PATH = pathlib.Path(os.getenv("PROCESSED_DATA_PATH"))
+from src import get_config
+from src.data import read_stations_time_series
 
 
 def main():
-    dock_bikes_timeseries = pd.read_csv(
-        DATA_PROCESSED_PATH / "stations_timeseries.csv",
-        index_col="timestamps",
-        parse_dates=True,
+    config = get_config()
+    dock_bikes_timeseries = read_stations_time_series(
+        config.processed_data_path / "stations_timeseries.csv"
     )
+
+
     dock_bikes_timeseries = dock_bikes_timeseries.resample("H").mean()
-    # Interpolate missing values
+    
+    dock_bikes_timeseries["missing"] = (
+        dock_bikes_timeseries[str(config.target_station_id)]
+        .isnull()
+        .astype(int)
+    )
+
     dock_bikes_timeseries.interpolate(method="linear", inplace=True)
     dock_bikes_timeseries.to_csv(
-        DATA_PROCESSED_PATH / "stations_timeseries_resampled.csv"
+        config.processed_data_path / "stations_timeseries_resampled.csv"
     )
 
 
