@@ -1,6 +1,10 @@
 import os
 import json
 import pandas as pd
+import requests
+import requests_cache
+from retry_requests import retry
+import openmeteo_requests
 
 PathLike = os.PathLike | str | bytes
 
@@ -81,3 +85,48 @@ def load_json_files_per_month(
         if date >= start_date and date <= end_date:
             json_objects.extend(load_json_objects(file_path, encoding))
     return json_objects
+
+
+def get_weather_data(
+    latitude: float,
+    longitude: float,
+    start_date: str = "2022-01-01",
+    end_date: str = "2022-12-31",
+) -> pd.DataFrame:
+    # Setup the Open-Meteo API client with cache and retry on error
+    cache_session = requests_cache.CachedSession(".cache", expire_after=-1)
+    retry_session = retry(cache_session, retries=5, backoff_factor=0.2)
+    openmeteo = openmeteo_requests.Client(session=retry_session)
+
+    # Make sure all required weather variables are listed here
+    # The order of variables in hourly or daily is important to assign them correctly below
+    url = "https://archive-api.open-meteo.com/v1/archive"
+    params = {
+        "latitude": latitude,
+        "longitude": longitude,
+        "start_date": start_date,
+        "end_date": end_date,
+        "hourly": "precipitation",
+        "timezone": "Europe/Berlin",
+    }
+    responses = openmeteo.weather_api(url, params=params)
+
+    response = responses[0]
+    # Process hourly data. The order of variables needs to be the same as requested.
+    hourly = response.Hourly()
+    hourly_precipitation = hourly.Variables(0).ValuesAsNumpy()
+
+    hourly_data = {
+        "date": pd.date_range(
+            start=pd.to_datetime(hourly.Time(), unit="s"),
+            end=pd.to_datetime(hourly.TimeEnd(), unit="s"),
+            freq=pd.Timedelta(seconds=hourly.Interval()),
+            inclusive="left",
+        )
+    }
+    hourly_data["precipitation"] = hourly_precipitation
+
+    hourly_dataframe = pd.DataFrame(data=hourly_data)
+    hourly_dataframe.set_index("date", inplace=True)
+
+    return hourly_dataframe
