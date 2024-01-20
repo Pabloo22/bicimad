@@ -1,12 +1,23 @@
 import os
 import json
 import pandas as pd
-import requests
 import requests_cache
 from retry_requests import retry
 import openmeteo_requests
 
 PathLike = os.PathLike | str | bytes
+
+
+def read_stations_time_series(path: PathLike) -> pd.DataFrame:
+    dock_bikes_timeseries = pd.read_csv(
+        path,
+        index_col="timestamps",
+        parse_dates=True,
+    )
+    dock_bikes_timeseries.columns.astype(str)
+
+    return dock_bikes_timeseries
+    
 
 
 def load_holidays_calendar(path: PathLike) -> pd.DataFrame:
