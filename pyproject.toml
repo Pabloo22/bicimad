@@ -16,6 +16,8 @@ seaborn = "^0.13.1"
 python-dotenv = "^1.0.0"
 ipykernel = "^6.28.0"
 statsmodels = "^0.14.1"
+requests-cache = "^1.1.1"
+retry-requests = "^2.0.0"
 
 
 [build-system]
