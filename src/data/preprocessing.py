@@ -76,10 +76,9 @@ def get_holidays(
     holidays: pd.DataFrame,
     include_weekends: bool = False,
 ) -> pd.DataFrame:
-    # Set end date + 1 day to include the end date in the range
     end_date = pd.to_datetime(end_date) + pd.Timedelta(days=1)
-    # Filter by date index (start_date <= date <= end_date)
     holidays = holidays.loc[start_date:end_date]
+    
     # For each date, if there is a holiday, set the value to 1, otherwise 0
     holiday_column = holidays.columns[1]
     festivos = holidays[holiday_column].map(

@@ -1,8 +1,7 @@
 import pandas as pd
 
 from src.config import get_config
-from src.data import get_weather_data
-from src.data import get_holidays
+from src.data import get_weather_data, get_holidays
 
 
 def main():
