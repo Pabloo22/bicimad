@@ -3,6 +3,7 @@ from .load_data import (
     find_json_files_in_directory,
     load_json_files,
     load_json_objects,
+    load_train_test,
     load_holidays_calendar,
     load_json_files_per_month,
     get_weather_data,

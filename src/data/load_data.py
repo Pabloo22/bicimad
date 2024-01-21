@@ -23,6 +23,7 @@ def load_train_test(
         index_col=0,
         parse_dates=True,
     )
+    train.columns = train.columns.astype(str)
     return train, test
 
 
