@@ -69,7 +69,6 @@ def plot_mean_values_by_hour_for_each_month(
     plt.xticks(hours, hours)
     plt.legend()
     plt.grid(True)
-    plt.show()
 
 
 def plot_autocorrelation(
@@ -77,6 +76,7 @@ def plot_autocorrelation(
     lags=24 * 7,
     figsize=(12, 6),
     title_prefix="",
+    use_grid=False,
 ):
     series = _extract_series(data)
     plt.figure(figsize=figsize)
@@ -87,6 +87,7 @@ def plot_autocorrelation(
         lags=lags,
         title=f"{title_prefix}Función de Autocorrelación",
     )
+    plt.grid(use_grid)
     plt.subplot(212)
     plot_pacf(
         series,
@@ -94,8 +95,8 @@ def plot_autocorrelation(
         lags=lags,
         title=f"{title_prefix}Función de Autocorrelación Parcial",
     )
+    plt.grid(use_grid)
     plt.tight_layout()
-    plt.show()
 
 
 def _extract_series(data: pd.DataFrame | pd.Series) -> pd.Series:
