@@ -2,7 +2,7 @@
 import pandas as pd
 import folium
 import matplotlib.pyplot as plt
-from statsmodels.graphics.tsaplots import plot_acf, plot_pacf
+from statsmodels.graphics import tsaplots
 
 
 RED_ICON = {"color": "red", "icon": "fa-bicycle", "prefix": "fa"}
@@ -71,47 +71,6 @@ def plot_mean_values_by_hour_for_each_month(
     plt.grid(True)
 
 
-def plot_autocorrelation(
-    data: pd.DataFrame | pd.Series,
-    lags=24 * 7,
-    figsize=(12, 6),
-    title_prefix="",
-    use_grid=False,
-):
-    series = _extract_series(data)
-    plt.figure(figsize=figsize)
-    plt.subplot(211)
-    plot_acf(
-        series,
-        ax=plt.gca(),
-        lags=lags,
-        title=f"{title_prefix}Función de Autocorrelación",
-    )
-    plt.grid(use_grid)
-    plt.subplot(212)
-    plot_pacf(
-        series,
-        ax=plt.gca(),
-        lags=lags,
-        title=f"{title_prefix}Función de Autocorrelación Parcial",
-    )
-    plt.grid(use_grid)
-    plt.tight_layout()
-
-
-def _extract_series(data: pd.DataFrame | pd.Series) -> pd.Series:
-    if isinstance(data, pd.DataFrame):
-        if len(data.columns) != 1:
-            raise ValueError("DataFrame must have only one column")
-        series = data.iloc[:, 0]
-    elif isinstance(data, pd.Series):
-        series = data
-    else:
-        raise TypeError("Input must be a pandas Series or DataFrame")
-
-    return series
-
-
 def plot_stations_in_map(
     stations: pd.DataFrame,
     target_station_id: str,
@@ -135,6 +94,88 @@ def plot_stations_in_map(
     map_.fit_bounds(map_.get_bounds())
 
     return map_
+
+
+def plot_acf(
+    series: pd.Series,
+    lags: int,
+    title: str = "Función de Autocorrelación",
+    figsize: tuple[int, int] = (12, 6),
+    use_grid: bool = False,
+    add_day_vertical_lines: bool = False,
+):
+    _plot_auto_correlation(
+        tsaplots.plot_acf,
+        series,
+        lags,
+        title,
+        figsize,
+        use_grid,
+        add_day_vertical_lines,
+    )
+
+
+def plot_pacf(
+    series: pd.Series,
+    lags: int,
+    title: str = "Función de Autocorrelación Parcial",
+    figsize: tuple[int, int] = (12, 6),
+    use_grid: bool = False,
+    add_day_vertical_lines: bool = False,
+):
+    _plot_auto_correlation(
+        tsaplots.plot_pacf,
+        series,
+        lags,
+        title,
+        figsize,
+        use_grid,
+        add_day_vertical_lines,
+    )
+
+
+def _plot_auto_correlation(
+    autocorrelation_function,
+    series,
+    lags,
+    title,
+    figsize,
+    use_grid,
+    add_day_vertical_lines,
+):
+    plt.figure(figsize=figsize)
+    autocorrelation_function(series, ax=plt.gca(), lags=lags, title=title)
+    plt.grid(use_grid)
+    if add_day_vertical_lines:
+        _add_day_vertical_lines(n_days=lags // 24)
+    plt.xlabel("Lags (horas)")
+    plt.tight_layout()
+
+
+def _add_day_vertical_lines(n_days: int):
+    for i in range(1, n_days + 1):
+        plt.axvline(x=24 * i, color="black", linestyle="--", alpha=0.5)
+        plural = "s" if i > 1 else ""
+        plt.text(
+            24 * i + 1,
+            0.95,
+            f"{i} día{plural}",
+            fontsize=8,
+            color="black",
+        )
+
+
+def _extract_series(data: pd.DataFrame | pd.Series) -> pd.Series:
+    if isinstance(data, pd.DataFrame):
+        if len(data.columns) != 1:
+            raise ValueError("DataFrame must have only one column")
+        series = data.iloc[:, 0]
+    elif isinstance(data, pd.Series):
+        series = data
+    else:
+        raise TypeError("Input must be a pandas Series or DataFrame")
+
+    return series
 
 
 def _get_coordinates(
