@@ -127,7 +127,8 @@ def get_weather_data(
     openmeteo = openmeteo_requests.Client(session=retry_session)
 
     # Make sure all required weather variables are listed here
-    # The order of variables in hourly or daily is important to assign them correctly below
+    # The order of variables in hourly or daily is important to assign them
+    # correctly below
     url = "https://archive-api.open-meteo.com/v1/archive"
     params = {
         "latitude": latitude,
@@ -140,7 +141,8 @@ def get_weather_data(
     responses = openmeteo.weather_api(url, params=params)
 
     response = responses[0]
-    # Process hourly data. The order of variables needs to be the same as requested.
+    # Process hourly data. The order of variables needs to be the same as 
+    # requested.
     hourly = response.Hourly()
     hourly_precipitation = hourly.Variables(0).ValuesAsNumpy()
 
