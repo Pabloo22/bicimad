@@ -6,7 +6,7 @@ from .load_data import (
     load_holidays_calendar,
     load_json_files_per_month,
     get_weather_data,
-    read_stations_time_series,
+    load_stations_time_series,
 )
 from .preprocessing import (
     build_stations_dataframe,

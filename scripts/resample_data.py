@@ -1,10 +1,10 @@
 from src import get_config
-from src.data import read_stations_time_series
+from src.data import load_stations_time_series
 
 
 def main():
     config = get_config()
-    dock_bikes_timeseries = read_stations_time_series(
+    dock_bikes_timeseries = load_stations_time_series(
         config.processed_data_path / "stations_timeseries.csv"
     )
 

@@ -26,7 +26,7 @@ def load_train_test(
     return train, test
 
 
-def read_stations_time_series(path: PathLike) -> pd.DataFrame:
+def load_stations_time_series(path: PathLike) -> pd.DataFrame:
     dock_bikes_timeseries = pd.read_csv(
         path,
         index_col="timestamps",
