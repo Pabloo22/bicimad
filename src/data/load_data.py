@@ -8,6 +8,24 @@ import openmeteo_requests
 PathLike = os.PathLike | str | bytes
 
 
+def load_train_test(
+    path: PathLike,
+    train_filename: str = "train.csv",
+    test_filename: str = "test.csv",
+) -> tuple[pd.DataFrame, pd.DataFrame]:
+    train = pd.read_csv(
+        os.path.join(path, train_filename),
+        index_col=0,
+        parse_dates=True,
+    )
+    test = pd.read_csv(
+        os.path.join(path, test_filename),
+        index_col=0,
+        parse_dates=True,
+    )
+    return train, test
+
+
 def read_stations_time_series(path: PathLike) -> pd.DataFrame:
     dock_bikes_timeseries = pd.read_csv(
         path,
@@ -17,7 +35,6 @@ def read_stations_time_series(path: PathLike) -> pd.DataFrame:
     dock_bikes_timeseries.columns.astype(str)
 
     return dock_bikes_timeseries
-    
 
 
 def load_holidays_calendar(path: PathLike) -> pd.DataFrame:
