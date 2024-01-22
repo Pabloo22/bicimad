@@ -8,6 +8,7 @@ from .load_data import (
     load_json_files_per_month,
     get_weather_data,
     load_stations_time_series,
+    load_train_test,
 )
 from .preprocessing import (
     build_stations_dataframe,
