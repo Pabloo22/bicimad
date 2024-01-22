@@ -296,3 +296,17 @@ def load_benzene_concentration_sample():
     X = df.drop(columns="target").to_numpy()
     X = np.expand_dims(X, axis=1)
     return X, y
+
+
+def plot_pred_vs_actual(
+    y_pred: pd.Series,
+    y_true: pd.Series,
+    title: str = "Predicciones vs. valores reales",
+    figsize: tuple[int, int] = (12, 6),
+):
+    both = pd.concat([y_pred, y_true], axis=1)
+    both.columns = ["pred", "true"]
+    both.plot(figsize=figsize)
+    plt.title(title)
+    plt.xlabel("Fecha")
+    plt.ylabel("Bicicletas ancladas")
