@@ -4,6 +4,7 @@ from warnings import simplefilter
 
 import numpy as np
 import pandas as pd
+from scipy import stats
 import folium
 import matplotlib.pyplot as plt
 from matplotlib.ticker import MaxNLocator
@@ -42,6 +43,44 @@ SEASONAL_COLORS = {
     12: "royalblue",  # December (Winter)
 }
 
+def check_gaussian_noise(residuals):
+    # Shapiro-Wilk test
+    shapiro_test = stats.shapiro(residuals)
+    shapiro_p_value = shapiro_test.pvalue
+
+    # D'Agostino's K^2 test
+    dagostino_test = stats.normaltest(residuals)
+    dagostino_p_value = dagostino_test.pvalue
+
+    visualize_residuals(residuals)
+
+    # Interpretation
+    alpha = 0.05
+    if shapiro_p_value > alpha and dagostino_p_value > alpha:
+        gaussian = True
+    else:
+        gaussian = False
+
+    return {
+        "Shapiro-Wilk Test p-value": shapiro_p_value,
+        "D'Agostino's K^2 Test p-value": dagostino_p_value,
+        "Is Gaussian": gaussian
+    }
+
+
+def visualize_residuals(residuals):
+    plt.figure(figsize=(12, 6))
+
+    plt.subplot(1, 2, 1)
+    sns.histplot(residuals, kde=True)
+    plt.title('Histogram of Residuals')
+
+    plt.subplot(1, 2, 2)
+    stats.probplot(residuals, dist="norm", plot=plt)
+    plt.title('Q-Q Plot')
+
+    plt.tight_layout()
+    plt.show()
 
 def plot_mean_values_by_hour_for_each_month(
     series: pd.Series | pd.DataFrame,
