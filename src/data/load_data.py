@@ -23,7 +23,11 @@ def load_train_test(
         index_col=0,
         parse_dates=True,
     )
+    # Set frequence index to one hour
+    train = train.asfreq("H")
     train.columns = train.columns.astype(str)
+    test = test.asfreq("H")
+    test.columns = test.columns.astype(str)
     return train, test
 
 
