@@ -45,6 +45,7 @@ def main():
         start_date,
         end_date,
         holidays_raw,
+        include_weekends=True,
     )
 
     dock_bikes_with_exogenous = dock_bikes_timeseries.merge(
