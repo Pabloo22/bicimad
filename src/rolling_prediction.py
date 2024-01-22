@@ -29,15 +29,20 @@ def get_rolling_predictions(
     for i in range(0, total_steps, step_length):
         # Adjust the forecast horizon for the last chunk
         end_idx = min(i + step_length, total_steps)
-        fh = np.arange(1, end_idx - i + 1)
 
-        y_pred = forecaster.predict(fh, X_test)
-        predictions.append(y_pred)
+        length_out = end_idx - i
+        if length_out < 3:
+            # We need at least 3 steps to make a prediction
+            break
 
-        forecaster.update(
-            y_test[i:end_idx],
-            X_test if X_test is not None else None,
+        sliced_y = y_test[i:end_idx]
+        sliced_X = X_test[i:end_idx] if X_test is not None else None
+        y_pred = forecaster.update_predict(
+            sliced_y,
+            X=sliced_X,
             update_params=update_params,
+            reset_forecaster=False,
         )
+        predictions.append(y_pred)
 
     return pd.concat(predictions, axis=0)
