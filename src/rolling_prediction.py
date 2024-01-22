@@ -1,23 +1,19 @@
-from typing import Optional, Callable
+from typing import Optional
 
 import numpy as np
 import pandas as pd
 
 from sktime.forecasting.base import BaseForecaster
-from sktime.performance_metrics.forecasting import mean_squared_error
 
 
-def evaluate_forecaster(
+def get_rolling_predictions(
     forecaster: BaseForecaster,
     step_length: int,
     y_test: pd.Series,
     X_test: Optional[pd.DataFrame] = None,
-    metric: Optional[
-        Callable[[np.ndarray | pd.Series, np.ndarray | pd.Series], float]
-    ] = None,
     update_params: bool = False,
-) -> tuple[float, pd.Series]:
-    """Returns the score of the model on the given metric and its predictions.
+) -> pd.Series:
+    """Returns the predictions of the model.
 
     We use the following workflow for forecasting:
         1. Predict `step_length` steps ahead
@@ -25,14 +21,9 @@ def evaluate_forecaster(
         3. Update using new data (don't update params necessarily)
         4. Repeat steps 2-4 as often as required
 
-    - The model should be already fitted.
-    - Default metric is mean squared error.
+    Note: The model should be already fitted.
     """
-    if metric is None:
-        metric = mean_squared_error
-
     total_steps = len(y_test)
-    metric_evaluations = []
     predictions = []
 
     for i in range(0, total_steps, step_length):
@@ -43,14 +34,10 @@ def evaluate_forecaster(
         y_pred = forecaster.predict(fh, X_test)
         predictions.append(y_pred)
 
-        metric_evaluations.append(
-            metric(y_test[i:end_idx], y_pred)
-        )
-
         forecaster.update(
             y_test[i:end_idx],
-            X_test,
+            X_test if X_test is not None else None,
             update_params=update_params,
         )
 
-    return np.mean(metric_evaluations), pd.concat(predictions, axis=0)
+    return pd.concat(predictions, axis=0)

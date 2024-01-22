@@ -7,4 +7,4 @@ from .visualization import (
     plot_windows,
     plot_pred_vs_actual,
 )
-from .evaluation import evaluate_forecaster
+from .rolling_prediction import get_rolling_predictions
